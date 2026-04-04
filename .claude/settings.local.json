@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:en.wikipedia.org)",
+      "Bash(curl -s -L -H \"User-Agent: Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" \"https://en.wikipedia.org/wiki/Opinion_polling_for_the_next_United_Kingdom_general_election\")",
+      "Bash(where python:*)",
+      "Bash(where python3:*)",
+      "Bash(curl -s -L -H \"User-Agent: Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" \"https://en.wikipedia.org/wiki/Opinion_polling_for_the_next_United_Kingdom_general_election\" -o /tmp/uk_polling.html)",
+      "Read(//tmp/**)",
+      "Bash(curl -s -L -H \"User-Agent: Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" \"https://en.wikipedia.org/wiki/Opinion_polling_for_the_next_Spanish_general_election\" -o /tmp/spain_polling.html)",
+      "Bash(curl -s -L -H \"User-Agent: Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" \"https://en.wikipedia.org/wiki/Opinion_polling_for_the_next_German_federal_election\" -o /tmp/germany_polling.html)",
+      "Bash(curl -s -L -H \"User-Agent: Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" \"https://en.wikipedia.org/wiki/Opinion_polling_for_the_2026_New_Zealand_general_election\" -o /tmp/nz_polling.html)",
+      "Bash(curl -s -L -H \"User-Agent: Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" \"https://en.wikipedia.org/wiki/Opinion_polling_for_the_next_United_Kingdom_general_election\" -o \"$TEMP/uk_polling.html\")",
+      "Bash(curl -s -L -H \"User-Agent: Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" \"https://en.wikipedia.org/wiki/Opinion_polling_for_the_next_Spanish_general_election\" -o \"$TEMP/spain_polling.html\")",
+      "Bash(curl -s -L -H \"User-Agent: Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" \"https://en.wikipedia.org/wiki/Opinion_polling_for_the_next_German_federal_election\" -o \"$TEMP/germany_polling.html\")",
+      "Bash(curl -s -L -H \"User-Agent: Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" \"https://en.wikipedia.org/wiki/Opinion_polling_for_the_2026_New_Zealand_general_election\" -o \"$TEMP/nz_polling.html\")",
+      "Bash(echo \"Done. TEMP=$TEMP\")",
+      "Bash(cygpath -w /tmp/uk_polling.html)",
+      "Bash(C:/Users/ryan1/AppData/Local/Programs/Python/Python313/python.exe -c \"import pandas; print\\(''pandas'', pandas.__version__\\)\")",
+      "Bash(C:/Users/ryan1/AppData/Local/Programs/Python/Python313/python.exe -c \"import bs4; print\\(''bs4'', bs4.__version__\\)\")",
+      "Bash(C:/Users/ryan1/AppData/Local/Programs/Python/Python313/python.exe -c \"import requests; print\\(''requests'', requests.__version__\\)\")",
+      "Bash(C:/Users/ryan1/AppData/Local/Programs/Python/Python313/python.exe -c \"import lxml; print\\(''lxml'', lxml.__version__\\)\")",
+      "Bash(C:/Users/ryan1/AppData/Local/Programs/Python/Python313/python.exe \"Polling Dashboard Source Data ETL Script.py\")",
+      "Bash(C:/Users/ryan1/AppData/Local/Programs/Python/Python313/python.exe -c \":*)",
+      "Bash(python \"Polling Dashboard Source Data ETL Script.py\")",
+      "Bash(python -c ':*)"
+    ]
+  }
+}

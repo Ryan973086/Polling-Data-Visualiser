@@ -1,6 +1,7 @@
 #Polling Dashboard Source Data ETL Script
 
 import re
+import sqlite3
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup, Tag
@@ -8,7 +9,8 @@ from bs4 import BeautifulSoup, Tag
 # --- Configuration ---
 
 URLS_FILE = "Wikipedia Pages.txt"
-OUTPUT_FILE = "polling_data.csv"
+OUTPUT_FILE = "polling_data.db"
+SCHEMA_FILE = "schema.sql"
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 
 COUNTRY_CONFIGS = {
@@ -542,11 +544,40 @@ def main():
     col_order = ["Country", "Date", "Pollster", "Sample Size", "Party", "Percentage"]
     result = result[[c for c in col_order if c in result.columns]]
 
-    # Write output
-    result.to_csv(OUTPUT_FILE, index=False, encoding="utf-8-sig")
+    # Rename columns to snake_case for SQL-friendly names
+    result = result.rename(columns={
+        "Country": "country",
+        "Date": "date",
+        "Pollster": "pollster",
+        "Sample Size": "sample_size",
+        "Party": "party",
+        "Percentage": "percentage",
+    })
+
+    # Write output to SQLite
+    schema_sql = """CREATE TABLE polls (
+    country     TEXT NOT NULL,
+    date        TEXT NOT NULL,
+    pollster    TEXT NOT NULL,
+    sample_size TEXT,
+    party       TEXT NOT NULL,
+    percentage  REAL NOT NULL
+);"""
+
+    conn = sqlite3.connect(OUTPUT_FILE)
+    conn.execute("DROP TABLE IF EXISTS polls")
+    conn.execute(schema_sql)
+    result.to_sql("polls", conn, if_exists="append", index=False)
+    conn.close()
+
+    # Export schema for version control
+    with open(SCHEMA_FILE, "w", encoding="utf-8") as f:
+        f.write(schema_sql + "\n")
+
     print(f"Written {len(result)} rows to {OUTPUT_FILE}")
+    print(f"Schema exported to {SCHEMA_FILE}")
     print(f"\nRows per country:")
-    print(result.groupby("Country").size().to_string())
+    print(result.groupby("country").size().to_string())
 
 
 if __name__ == "__main__":
