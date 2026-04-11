@@ -23,7 +23,13 @@
       "Bash(C:/Users/ryan1/AppData/Local/Programs/Python/Python313/python.exe \"Polling Dashboard Source Data ETL Script.py\")",
       "Bash(C:/Users/ryan1/AppData/Local/Programs/Python/Python313/python.exe -c \":*)",
       "Bash(python \"Polling Dashboard Source Data ETL Script.py\")",
-      "Bash(python -c ':*)"
+      "Bash(python -c ':*)",
+      "Bash(sqlite3 polling_data.db \"SELECT country, COUNT\\(*\\) as total, SUM\\(CASE WHEN end_date IS NOT NULL THEN 1 ELSE 0 END\\) as has_end, SUM\\(CASE WHEN start_date IS NOT NULL THEN 1 ELSE 0 END\\) as has_start, SUM\\(CASE WHEN start_date IS NULL AND end_date IS NULL THEN 1 ELSE 0 END\\) as both_null FROM polls GROUP BY country;\")",
+      "Bash(sqlite3 polling_data.db \"SELECT start_date, end_date FROM polls WHERE start_date IS NOT NULL LIMIT 10;\")",
+      "Bash(sqlite3 polling_data.db \"SELECT * FROM polls WHERE start_date IS NOT NULL AND start_date > end_date;\")",
+      "Bash(sqlite3 polling_data.db \"SELECT DISTINCT end_date FROM polls WHERE country='United Kingdom' AND end_date IS NOT NULL ORDER BY end_date LIMIT 20;\")",
+      "Bash(sqlite3 polling_data.db \"SELECT DISTINCT pollster FROM polls WHERE country='United Kingdom' AND end_date IS NULL LIMIT 10;\")",
+      "Bash(sqlite3 polling_data.db \"SELECT start_date, end_date, pollster FROM polls WHERE start_date IS NULL LIMIT 5;\")"
     ]
   }
 }

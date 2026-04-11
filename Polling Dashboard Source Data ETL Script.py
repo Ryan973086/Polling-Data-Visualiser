@@ -2,6 +2,8 @@
 
 import re
 import sqlite3
+from datetime import datetime
+
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup, Tag
@@ -431,24 +433,89 @@ def extract_table_data(table, config):
 
 
 def get_year_from_heading(table):
-    """Try to find a year from the h3 heading preceding this table."""
-    prev = table.previous_sibling
-    while prev:
-        if isinstance(prev, Tag):
-            # Check for heading directly or inside mw-heading div
-            heading = None
-            if prev.name in ("h3", "h2"):
-                heading = prev
-            elif prev.name == "div" and "mw-heading" in prev.get("class", []):
-                heading = prev.find(["h2", "h3", "h4", "h5"])
-            if heading:
-                text = heading.get_text()
-                match = re.search(r'(20\d{2})', text)
-                if match:
-                    return match.group(1)
-                break
-        prev = prev.previous_sibling
+    """Try to find a year from the heading preceding this table.
+
+    Uses find_previous to traverse the full document tree backwards,
+    not just siblings, since Wikipedia's HTML can nest tables under
+    different parent elements than the headings.
+    """
+    for heading in table.find_all_previous(["h2", "h3", "h4", "h5"]):
+        text = heading.get_text()
+        match = re.search(r'(20\d{2})', text)
+        if match:
+            return match.group(1)
     return None
+
+
+def parse_date_range(date_str):
+    """Parse a date string into (start_date, end_date) as ISO format strings.
+
+    Returns (None, end_iso) for single dates.
+    Returns (start_iso, end_iso) for date ranges.
+    Returns (None, None) if parsing fails.
+    """
+    if not date_str or not date_str.strip():
+        return None, None
+
+    date_str = date_str.strip()
+    EN_DASH = '\u2013'
+
+    # Require a year for parsing
+    if not re.search(r'20\d{2}', date_str):
+        return None, None
+
+    if EN_DASH in date_str:
+        parts = date_str.split(EN_DASH, 1)
+        start_part = parts[0].strip()
+        end_part = parts[1].strip()
+
+        # Parse end date (always has the year)
+        try:
+            end_date = datetime.strptime(end_part, '%d %b %Y').date()
+        except ValueError:
+            return None, None
+
+        start_tokens = start_part.split()
+
+        if len(start_tokens) == 1:
+            # Just a day number: "6" in "6–7 Apr 2025"
+            try:
+                start_date = end_date.replace(day=int(start_tokens[0]))
+            except (ValueError, TypeError):
+                return None, None
+
+        elif len(start_tokens) == 2:
+            # Day + month: "27 Mar" in "27 Mar–1 Apr 2025"
+            try:
+                candidate = datetime.strptime(
+                    f'{start_tokens[0]} {start_tokens[1]} {end_date.year}',
+                    '%d %b %Y',
+                ).date()
+            except ValueError:
+                return None, None
+            # Cross-year: if start > end, start must be previous year
+            if candidate > end_date:
+                candidate = candidate.replace(year=candidate.year - 1)
+            start_date = candidate
+
+        elif len(start_tokens) == 3:
+            # Full date: "23 Dec 2025"
+            try:
+                start_date = datetime.strptime(start_part, '%d %b %Y').date()
+            except ValueError:
+                return None, None
+        else:
+            return None, None
+
+        return start_date.isoformat(), end_date.isoformat()
+
+    else:
+        # Single date
+        try:
+            single = datetime.strptime(date_str, '%d %b %Y').date()
+            return None, single.isoformat()
+        except ValueError:
+            return None, None
 
 
 def process_url(url):
@@ -483,13 +550,20 @@ def process_url(url):
         print(f"  WARNING: No data extracted for {country}")
         return pd.DataFrame()
 
+    # Parse dates into start/end columns
+    for row in all_rows:
+        date_val = row.pop("Date", "")
+        start_date, end_date = parse_date_range(date_val)
+        row["Start Date"] = start_date
+        row["End Date"] = end_date
+
     print(f"  Extracted {len(all_rows)} polling rows")
 
     # Build wide DataFrame
     df = pd.DataFrame(all_rows)
 
-    # Identify party columns (everything that isn't Date, Pollster, Sample Size)
-    meta_cols = ["Date", "Pollster", "Sample Size"]
+    # Identify party columns (everything that isn't a meta column)
+    meta_cols = ["Start Date", "End Date", "Pollster", "Sample Size"]
     party_cols = [c for c in df.columns if c not in meta_cols]
 
     # Add country
@@ -541,13 +615,14 @@ def main():
     result = pd.concat(all_data, ignore_index=True)
 
     # Reorder columns
-    col_order = ["Country", "Date", "Pollster", "Sample Size", "Party", "Percentage"]
+    col_order = ["Country", "Start Date", "End Date", "Pollster", "Sample Size", "Party", "Percentage"]
     result = result[[c for c in col_order if c in result.columns]]
 
     # Rename columns to snake_case for SQL-friendly names
     result = result.rename(columns={
         "Country": "country",
-        "Date": "date",
+        "Start Date": "start_date",
+        "End Date": "end_date",
         "Pollster": "pollster",
         "Sample Size": "sample_size",
         "Party": "party",
@@ -557,7 +632,8 @@ def main():
     # Write output to SQLite
     schema_sql = """CREATE TABLE polls (
     country     TEXT NOT NULL,
-    date        TEXT NOT NULL,
+    start_date  DATE,
+    end_date    DATE,
     pollster    TEXT NOT NULL,
     sample_size TEXT,
     party       TEXT NOT NULL,
