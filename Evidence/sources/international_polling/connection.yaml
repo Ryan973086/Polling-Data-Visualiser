@@ -1,0 +1,5 @@
+# This file was automatically generated
+name: international_polling
+type: sqlite
+options:
+  filename: polling_data.db
