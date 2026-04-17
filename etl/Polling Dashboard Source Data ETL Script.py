@@ -1,8 +1,10 @@
 #Polling Dashboard Source Data ETL Script
 
 import re
+import shutil
 import sqlite3
 from datetime import datetime
+from pathlib import Path
 
 import requests
 import pandas as pd
@@ -10,9 +12,15 @@ from bs4 import BeautifulSoup, Tag
 
 # --- Configuration ---
 
-URLS_FILE = "Wikipedia Pages.txt"
-OUTPUT_FILE = "polling_data.db"
-SCHEMA_FILE = "schema.sql"
+URLS_FILE = "etl/Wikipedia Pages.txt"
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parent
+DATA_DIR = PROJECT_ROOT / "data"
+OUTPUT_FILES = [
+    DATA_DIR / "polling_data.db",
+    PROJECT_ROOT / "Evidence" / "sources" / "international_polling" / "polling_data.db",
+]
+SCHEMA_FILE = DATA_DIR / "schema.sql"
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 
 COUNTRY_CONFIGS = {
@@ -640,17 +648,23 @@ def main():
     percentage  REAL NOT NULL
 );"""
 
-    conn = sqlite3.connect(OUTPUT_FILE)
-    conn.execute("DROP TABLE IF EXISTS polls")
+    primary_db, *secondary_dbs = OUTPUT_FILES
+    if primary_db.exists():
+        primary_db.unlink()
+    conn = sqlite3.connect(primary_db)
     conn.execute(schema_sql)
     result.to_sql("polls", conn, if_exists="append", index=False)
     conn.close()
+
+    for secondary_db in secondary_dbs:
+        shutil.copyfile(primary_db, secondary_db)
 
     # Export schema for version control
     with open(SCHEMA_FILE, "w", encoding="utf-8") as f:
         f.write(schema_sql + "\n")
 
-    print(f"Written {len(result)} rows to {OUTPUT_FILE}")
+    for output_file in OUTPUT_FILES:
+        print(f"Written {len(result)} rows to {output_file}")
     print(f"Schema exported to {SCHEMA_FILE}")
     print(f"\nRows per country:")
     print(result.groupby("country").size().to_string())
