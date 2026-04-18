@@ -15,6 +15,30 @@ group by 1
     value=country
 />
 
+```sql moving_avg_scatter
+SELECT
+    country,
+    party,
+    end_date,
+    percentage,
+    AVG(percentage) OVER (
+        PARTITION BY party
+        ORDER BY end_date
+        GROUPS BETWEEN 10 PRECEDING AND CURRENT ROW
+    ) AS rolling_avg
+FROM international_polling.my_query
+WHERE country = '${inputs.selected_country.value}'
+```
+
+<LineChart 
+    data={moving_avg_scatter}
+    x=end_date
+    y=rolling_avg
+    yAxisTitle="percentage (%)"
+    series=party
+    chartAreaHeight=360
+/>
+
 ```sql scatter_data
 select 
     end_date as Date,
