@@ -39,24 +39,10 @@ WHERE country = '${inputs.selected_country.value}'
     chartAreaHeight=360
 />
 
-```sql scatter_data
-select 
-    end_date as Date,
-    party,
-    percentage
-from international_polling.my_query
-where country = '${inputs.selected_country.value}'
-```
-
-<ScatterPlot 
-    data={scatter_data}
-    x=Date
-    y=percentage
-    series=party
-    pointSize=5
-    yMin=0
-    chartAreaHeight=360
-/>
+<Chart data={moving_avg_scatter} x="end_date" yMin =0 title="Polling Trends" chartAreaHeight=400>
+    <Line y="rolling_avg" series="party" />
+    <Scatter y="percentage" series="party" pointSize=5 opacity=0.3 />
+</Chart>
 
 ```sql polls_wide
 PIVOT (
