@@ -58,10 +58,16 @@ where country = '${inputs.selected_country.value}'
     chartAreaHeight=360
 />
 
-```sql all_polling_data
-select *
-from international_polling.my_query
-where country = '${inputs.selected_country.value}'
+```sql polls_wide
+PIVOT (
+    SELECT country, end_date, pollster, sample_size, party, percentage
+    FROM international_polling.my_query
+    WHERE country = '${inputs.selected_country.value}'
+)
+ON party
+USING MAX(percentage)
+GROUP BY country, end_date, pollster, sample_size
+ORDER BY end_date DESC
 ```
 
-<DataTable data={all_polling_data} />
+<DataTable data={polls_wide} />
