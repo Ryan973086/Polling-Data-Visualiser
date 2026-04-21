@@ -39,7 +39,18 @@ WHERE country = '${inputs.selected_country.value}'
     chartAreaHeight=360
 />
 
-<Chart data={moving_avg_scatter} x="end_date" yMin =0 title="Polling Trends" chartAreaHeight=400>
+<Chart 
+    data={moving_avg_scatter} 
+    x="end_date" 
+    yMin =0 
+    title="Polling Trends" 
+    chartAreaHeight=400 
+    echartsOptions={{
+        tooltip: {
+            show: false
+        }
+    }}
+>
     <Line y="rolling_avg" series="party" />
     <Scatter y="percentage" series="party" pointSize=5 opacity=0.3 />
 </Chart>
