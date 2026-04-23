@@ -1,57 +1,61 @@
----
-title: Welcome to Evidence
----
+## Welcome to the international polling visualiser
 
-<Details title='How to edit this page'>
+Use the filters below to view recent polling data for the relevant country.
 
-  This page can be found in your project at `/pages/index.md`. Make a change to the markdown file and save it to see the change take effect in your browser.
-</Details>
-
-```sql categories
-  select
-      category
-  from needful_things.orders
-  group by category
+```sql countries
+select 
+    country
+from international_polling.my_query
+group by 1
 ```
 
-<Dropdown data={categories} name=category value=category>
-    <DropdownOption value="%" valueLabel="All Categories"/>
-</Dropdown>
-
-<Dropdown name=year>
-    <DropdownOption value=% valueLabel="All Years"/>
-    <DropdownOption value=2019/>
-    <DropdownOption value=2020/>
-    <DropdownOption value=2021/>
-</Dropdown>
-
-```sql orders_by_category
-  select 
-      date_trunc('month', order_datetime) as month,
-      sum(sales) as sales_usd,
-      category
-  from needful_things.orders
-  where category like '${inputs.category.value}'
-  and date_part('year', order_datetime) like '${inputs.year.value}'
-  group by all
-  order by sales_usd desc
-```
-
-<BarChart
-    data={orders_by_category}
-    title="Sales by Month, {inputs.category.label}"
-    x=month
-    y=sales_usd
-    series=category
+<Dropdown
+    name=selected_country
+    data={countries}
+    value=country
 />
 
-## What's Next?
-- [Connect your data sources](settings)
-- Edit/add markdown files in the `pages` folder
-- Deploy your project with [Evidence Cloud](https://evidence.dev/cloud)
+```sql moving_avg_scatter
+SELECT
+    country,
+    party,
+    end_date,
+    percentage,
+    AVG(percentage) OVER (
+        PARTITION BY party
+        ORDER BY end_date
+        GROUPS BETWEEN 10 PRECEDING AND CURRENT ROW
+    ) AS rolling_avg
+FROM international_polling.my_query
+WHERE country = '${inputs.selected_country.value}'
+```
 
-## Get Support
-- Message us on [Slack](https://slack.evidence.dev/)
-- Read the [Docs](https://docs.evidence.dev/)
-- Open an issue on [Github](https://github.com/evidence-dev/evidence)
-- Test 1234
+<Chart 
+    data={moving_avg_scatter} 
+    x="end_date" 
+    yMin =0 
+    title="Polling Trends" 
+    chartAreaHeight=400 
+    echartsOptions={{
+        tooltip: {
+            show: false
+        }
+    }}
+>
+    <Line y="rolling_avg" series="party" />
+    <Scatter y="percentage" series="party" pointSize=5 opacity=0.3 />
+</Chart>
+
+```sql polls_wide
+PIVOT (
+    SELECT country, end_date, pollster, sample_size, party, percentage
+    FROM international_polling.my_query
+    WHERE country = '${inputs.selected_country.value}'
+)
+ON party
+USING MAX(percentage)
+GROUP BY country, end_date, pollster, sample_size
+ORDER BY end_date DESC
+```
+
+<DataTable data={polls_wide} />
