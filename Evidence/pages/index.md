@@ -78,8 +78,8 @@ WHERE country = '${inputs.selected_country.value}'
         }
     }}
 >
-    <Line y="rolling_avg" />
-    <Scatter y="percentage" pointSize=5 opacity=0.3 />
+    <Line y="rolling_avg" handleMissing=connect lineWidth=3/>
+    <Scatter y="percentage" pointSize=5 opacity=0.3 fillColor="grey"/>
 </Chart>
 
 ```sql polls_wide
