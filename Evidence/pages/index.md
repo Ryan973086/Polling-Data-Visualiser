@@ -94,4 +94,8 @@ GROUP BY country, end_date, pollster, sample_size
 ORDER BY end_date DESC
 ```
 
-<DataTable data={polls_wide} />
+{#if polls_wide?.length > 0 && polls_wide[0]?.country === inputs.selected_country.value}
+    <DataTable data={polls_wide} />
+{:else}
+    <em>Loading data for {inputs.selected_country.value}…</em>
+{/if}
