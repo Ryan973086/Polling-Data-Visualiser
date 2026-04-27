@@ -70,7 +70,9 @@ WHERE country = '${inputs.selected_country.value}'
         "LAB":          "#D82A20",
         "GRN":          "#098137",
         "ACT":          "#FFD700",
-        "NZF":          "#000000"
+        "NZF":          "#000000",
+        "TPM":          "#8f5a25",
+        "TOP":          "#12cfbc"
     }} 
     echartsOptions={{
         tooltip: {
