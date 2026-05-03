@@ -1,3 +1,8 @@
+---
+title: My Dashboard
+full_width: false
+---
+
 ## Welcome to the international polling visualiser
 
 Use the filters below to view recent polling data for the selected country.
@@ -28,6 +33,52 @@ SELECT
     ) AS rolling_avg
 FROM international_polling.my_query
 WHERE country = '${inputs.selected_country.value}'
+```
+
+```sql first_vs_latest
+WITH ranked AS (
+    SELECT
+        country,
+        party,
+        end_date,
+        percentage,
+        AVG(percentage) OVER (
+            PARTITION BY party
+            ORDER BY end_date
+            GROUPS BETWEEN 10 PRECEDING AND CURRENT ROW
+        ) AS rolling_avg,
+        ROW_NUMBER() OVER (PARTITION BY party ORDER BY end_date ASC,  pollster ASC)  AS rn_first,
+        ROW_NUMBER() OVER (PARTITION BY party ORDER BY end_date DESC, pollster DESC) AS rn_last
+    FROM international_polling.my_query
+    WHERE country = '${inputs.selected_country.value}'
+),
+first_poll AS (
+    SELECT country, party, percentage AS value, 'Last Election' AS measure
+    FROM ranked WHERE rn_first = 1
+),
+latest_avg AS (
+    SELECT country, party, rolling_avg AS value, 'Latest 10-poll avg' AS measure
+    FROM ranked WHERE rn_last  = 1
+),
+sort_keys AS (
+    SELECT party, value AS sort_key FROM latest_avg
+)
+SELECT u.country, u.party, u.measure, u.value, s.sort_key
+FROM (SELECT * FROM first_poll UNION ALL SELECT * FROM latest_avg) u
+LEFT JOIN sort_keys s ON s.party = u.party
+ORDER BY s.sort_key DESC NULLS LAST, u.party, u.measure
+```
+
+```sql polls_wide
+PIVOT (
+    SELECT country, end_date, pollster, sample_size, party, percentage
+    FROM international_polling.my_query
+    WHERE country = '${inputs.selected_country.value}'
+)
+ON party
+USING MAX(percentage)
+GROUP BY country, end_date, pollster, sample_size
+ORDER BY end_date DESC
 ```
 
 <Chart 
@@ -84,17 +135,28 @@ WHERE country = '${inputs.selected_country.value}'
     <Scatter y="percentage" pointSize=5 opacity=0.3 fillColor="grey"/>
 </Chart>
 
-```sql polls_wide
-PIVOT (
-    SELECT country, end_date, pollster, sample_size, party, percentage
-    FROM international_polling.my_query
-    WHERE country = '${inputs.selected_country.value}'
-)
-ON party
-USING MAX(percentage)
-GROUP BY country, end_date, pollster, sample_size
-ORDER BY end_date DESC
-```
+{#if first_vs_latest?.length > 0 && first_vs_latest[0]?.country === inputs.selected_country.value}
+    <BarChart
+        data={first_vs_latest}
+        x=party
+        y=value
+        series=measure
+        type=grouped
+        sort=false
+        title="Last Election vs latest 10-poll rolling average"
+        subtitle="How each party's support has shifted since the last election"
+        xAxisTitle="Party"
+        yAxisTitle="Percentage"
+        yFmt='0.0"%"'
+        chartAreaHeight=350
+        seriesColors={{
+            "Last Election":      "#9CA3AF",
+            "Latest 10-poll avg": "#1f49b4"
+        }}
+    />
+{:else}
+    <em>Loading comparison for {inputs.selected_country.value}…</em>
+{/if}
 
 {#if polls_wide?.length > 0 && polls_wide[0]?.country === inputs.selected_country.value}
     <DataTable data={polls_wide} />
