@@ -1,6 +1,6 @@
 ---
-title: My Dashboard
-full_width: false
+title: International Polling Visualiser
+full_width: true
 ---
 
 ## Welcome to the international polling visualiser
@@ -81,6 +81,8 @@ GROUP BY country, end_date, pollster, sample_size
 ORDER BY end_date DESC
 ```
 
+<Grid cols=2 gapSize=none>
+
 <Chart 
     data={moving_avg_scatter} 
     x="end_date" 
@@ -144,11 +146,10 @@ ORDER BY end_date DESC
         type=grouped
         sort=false
         title="Last Election vs latest 10-poll rolling average"
-        subtitle="How each party's support has shifted since the last election"
         xAxisTitle="Party"
         yAxisTitle="Percentage"
         yFmt='0.0"%"'
-        chartAreaHeight=350
+        chartAreaHeight=400
         seriesColors={{
             "Last Election":      "#9CA3AF",
             "Latest 10-poll avg": "#1f49b4"
@@ -157,6 +158,8 @@ ORDER BY end_date DESC
 {:else}
     <em>Loading comparison for {inputs.selected_country.value}…</em>
 {/if}
+
+</Grid>
 
 {#if polls_wide?.length > 0 && polls_wide[0]?.country === inputs.selected_country.value}
     <DataTable data={polls_wide} />
