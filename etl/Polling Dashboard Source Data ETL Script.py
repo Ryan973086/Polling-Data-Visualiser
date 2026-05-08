@@ -21,6 +21,7 @@ OUTPUT_FILES = [
     PROJECT_ROOT / "Evidence" / "sources" / "international_polling" / "polling_data.db",
 ]
 SCHEMA_FILE = DATA_DIR / "schema.sql"
+PARTIES_CSV = SCRIPT_DIR / "parties.csv"
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 
 COUNTRY_CONFIGS = {
@@ -648,12 +649,25 @@ def main():
     percentage  REAL NOT NULL
 );"""
 
+    parties_schema_sql = """CREATE TABLE parties (
+    party     TEXT PRIMARY KEY,
+    country   TEXT NOT NULL,
+    spectrum  TEXT,
+    coalition TEXT,
+    status    TEXT,
+    ideology  TEXT
+);"""
+
     primary_db, *secondary_dbs = OUTPUT_FILES
     if primary_db.exists():
         primary_db.unlink()
     conn = sqlite3.connect(primary_db)
     conn.execute(schema_sql)
     result.to_sql("polls", conn, if_exists="append", index=False)
+
+    conn.execute(parties_schema_sql)
+    parties_df = pd.read_csv(PARTIES_CSV)
+    parties_df.to_sql("parties", conn, if_exists="append", index=False)
     conn.close()
 
     for secondary_db in secondary_dbs:
@@ -661,10 +675,10 @@ def main():
 
     # Export schema for version control
     with open(SCHEMA_FILE, "w", encoding="utf-8") as f:
-        f.write(schema_sql + "\n")
+        f.write(schema_sql + "\n\n" + parties_schema_sql + "\n")
 
     for output_file in OUTPUT_FILES:
-        print(f"Written {len(result)} rows to {output_file}")
+        print(f"Written {len(result)} polls rows and {len(parties_df)} parties rows to {output_file}")
     print(f"Schema exported to {SCHEMA_FILE}")
     print(f"\nRows per country:")
     print(result.groupby("country").size().to_string())

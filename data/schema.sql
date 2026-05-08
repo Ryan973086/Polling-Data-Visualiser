@@ -7,3 +7,12 @@ CREATE TABLE polls (
     party       TEXT NOT NULL,
     percentage  REAL NOT NULL
 );
+
+CREATE TABLE parties (
+    party     TEXT PRIMARY KEY,
+    country   TEXT NOT NULL,
+    spectrum  TEXT,
+    coalition TEXT,
+    status    TEXT,
+    ideology  TEXT
+);
