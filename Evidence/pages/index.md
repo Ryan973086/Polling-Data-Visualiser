@@ -3,8 +3,6 @@ title: International Polling Visualiser
 full_width: true
 ---
 
-## Welcome to the international polling visualiser
-
 Use the filters below to view recent polling data for the selected country.
 
 ```sql countries
@@ -166,3 +164,5 @@ ORDER BY end_date DESC
 {:else}
     <em>Loading data for {inputs.selected_country.value}…</em>
 {/if}
+
+<LastRefreshed/>
