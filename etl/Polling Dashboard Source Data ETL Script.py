@@ -627,6 +627,20 @@ def main():
     col_order = ["Country", "Start Date", "End Date", "Pollster", "Sample Size", "Party", "Percentage"]
     result = result[[c for c in col_order if c in result.columns]]
 
+    # Collapse duplicate (country, dates, pollster, sample_size, party) rows by
+    # averaging their percentage. This handles two cases that surface in the
+    # scraped data: (a) the same poll being captured from multiple Wikipedia
+    # tables with identical values, and (b) scenario variants of the same
+    # poll with slightly differing percentages. dropna=False keeps rows where
+    # start_date is empty (e.g. election-result rows).
+    group_cols = [c for c in col_order if c != "Percentage"]
+    before_rows = len(result)
+    result = (
+        result.groupby(group_cols, as_index=False, dropna=False)["Percentage"]
+        .mean()
+    )
+    print(f"Deduped {before_rows - len(result)} duplicate rows by averaging percentages")
+
     # Rename columns to snake_case for SQL-friendly names
     result = result.rename(columns={
         "Country": "country",
