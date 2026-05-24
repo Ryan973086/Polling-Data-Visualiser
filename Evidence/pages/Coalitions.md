@@ -87,6 +87,8 @@ GROUP BY 1, 2
 ORDER BY 1, 2
 ```
 
+<Grid cols=2 gapSize=none>
+
 <LineChart
     data={status_breakdown}
     x=end_date
@@ -128,12 +130,16 @@ ORDER BY 1, 2
     x=end_date
     y=monthly_avg
     series=category
+    seriesOrder={['Left-wing populist', 'Left-wing', 'Centre-left', 'Centrist', 'Centre-right', 'Right-wing', 'Right-wing populist', 'Far-right', 'Far-right populist']}
     type=stacked
     title="Polling share by political spectrum (monthly average)"
     yAxisTitle="Polling %"
     yFmt='0.0"%"'
     chartAreaHeight=400
-    handleMissing=connect
-/>
+    handleMissing=connect>
+    <ReferenceLine y=50/>
+</AreaChart>
+
+</Grid>
 
 <LastRefreshed/>
