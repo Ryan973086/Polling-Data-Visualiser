@@ -95,7 +95,7 @@ ORDER BY 1, 2
     y=monthly_avg
     series=category
     seriesColors={{
-        "In government":       "#169a21",
+        "Government+Support":       "#169a21",
         "Opposition":          "#c01212",
         "Extra-parliamentary": "#575757"
     }}
@@ -129,8 +129,20 @@ ORDER BY 1, 2
     data={spectrum_breakdown}
     x=end_date
     y=monthly_avg
+    yMax=100
     series=category
-    seriesOrder={['Left-wing populist', 'Left-wing', 'Centre-left', 'Centrist', 'Centre-right', 'Right-wing', 'Right-wing populist', 'Far-right', 'Far-right populist']}
+    seriesOrder={['Far-left populist', 'Left-wing populist', 'Left-wing', 'Centre-left', 'Centrist', 'Centre-right', 'Right-wing', 'Right-wing populist', 'Far-right populist']}
+    seriesColors={{
+        "Far-left populist":       "#7a0000",
+        "Left-wing populist":      "#d81a1a",
+        "Left-wing":               "#da5757",
+        "Centre-left":             "#d37a7a",
+        "Centrist":                "#dbca12",
+        "Centre-right":            "#8197ce",
+        "Right-wing":              "#577bd6",
+        "Right-wing populist":     "#194ac4",
+        "Far-right populist":      "#022274"
+    }}        
     type=stacked
     title="Polling share by political spectrum (monthly average)"
     yAxisTitle="Polling %"

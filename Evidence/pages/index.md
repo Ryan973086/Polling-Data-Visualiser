@@ -92,6 +92,7 @@ ORDER BY end_date DESC
         "Lab":          "#E4003B",
         "Con":          "#0087DC",
         "Ref":          "#12B6CF",
+        "RB":           "#0f0f56",
         "LD":           "#FAA61A",
         "Grn":          "#02A95B",
         "SNP":          "#FFF95D",

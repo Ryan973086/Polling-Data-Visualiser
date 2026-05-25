@@ -1,36 +1,37 @@
 party,country,spectrum,coalition,status,ideology
-ACT,New Zealand,Right-wing,Right bloc,In government,Libertarian
+ACT,New Zealand,Right-wing,Right bloc,Government+Support,Libertarian
 AfD,Germany,Right-wing,,Opposition,
-Aliança.cat,Spain,Far-right,,Not in national government,Catalan independence
-BNG,Spain,Left-wing,Left bloc,Confidence-and-supply,Galician nationalist
+Aliança.cat,Spain,Far-right populist,,Opposition,Catalan independence
+BNG,Spain,Left-wing,Left bloc,Government+Support,Galician nationalist
 BSW,Germany,Left-wing populist,,Extra-parliamentary,
-CCa,Spain,Centrist,,Confidence-and-supply,Canarian regionalist
+CCa,Spain,Centrist,,Government+Support,Canarian regionalist
 Con,United Kingdom,Centre-right,,Opposition,
-EH Bildu,Spain,Left-wing,Left bloc,Confidence-and-supply,Basque nationalist
-ERC,Spain,Left-wing,Left bloc,Confidence-and-supply,Catalan independence
+EH Bildu,Spain,Left-wing,Left bloc,Government+Support,Basque nationalist
+ERC,Spain,Left-wing,Left bloc,Government+Support,Catalan independence
 FDP,Germany,Centre-right,,Extra-parliamentary,Liberal
 GRN,New Zealand,Left-wing,Left bloc,Opposition,Green
-Grn,United Kingdom,Left-wing,,Opposition,Green
+Grn,United Kingdom,Left-wing populist,,Opposition,Green
 Grüne,Germany,Centre-left,,Opposition,Green
 Junts,Spain,Centre-right,,Opposition,Catalan independence
 LAB,New Zealand,Centre-left,Left bloc,Opposition,
 LD,United Kingdom,Centrist,,Opposition,
-Lab,United Kingdom,Centre-left,,In government,
+Lab,United Kingdom,Centre-left,,Government+Support,
 Linke,Germany,Left-wing,,Opposition,
-NAT,New Zealand,Centre-right,Right bloc,In government,
-NZF,New Zealand,Right-wing populist,Right bloc,In government,
+NAT,New Zealand,Centre-right,Right bloc,Government+Support,
+NZF,New Zealand,Right-wing populist,Right bloc,Government+Support,
 PC,United Kingdom,Centre-left,,Opposition,Welsh nationalist
-PNV,Spain,Centre-right,,Confidence-and-supply,Basque nationalist
+PNV,Spain,Centre-right,,Government+Support,Basque nationalist
 PP,Spain,Centre-right,Right bloc,Opposition,
-PSOE,Spain,Centre-left,Left bloc,In government,
+PSOE,Spain,Centre-left,Left bloc,Government+Support,
 Podemos,Spain,Left-wing,Left bloc,Opposition,
+RB,United Kingdom,Far-right populist,,Opposition,
 Ref,United Kingdom,Right-wing populist,,Opposition,
 SALF,Spain,Far-right populist,Right bloc,Extra-parliamentary,
 SNP,United Kingdom,Centre-left,,Opposition,Scottish nationalist
-SPD,Germany,Centre-left,,In government,
-Sumar,Spain,Left-wing,Left bloc,In government,
+SPD,Germany,Centre-left,,Government+Support,
+Sumar,Spain,Left-wing,Left bloc,Government+Support,
 TOP,New Zealand,Centrist,,Extra-parliamentary,
-TPM,New Zealand,Left-wing,Left bloc,Opposition,Indigenous
+TPM,New Zealand,Far-left populist,Left bloc,Opposition,Indigenous
 UPN,Spain,Centre-right,Right bloc,Opposition,Navarrese regionalist
-Union,Germany,Centre-right,,In government,
-Vox,Spain,Far-right,Right bloc,Opposition,
+Union,Germany,Centre-right,,Government+Support,
+Vox,Spain,Far-right populist,Right bloc,Opposition,
