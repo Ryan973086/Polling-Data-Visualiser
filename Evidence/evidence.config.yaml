@@ -43,7 +43,7 @@ theme:
       light: "#c2410c"
       dark: "#fdba74"
     base:
-      light: "#ffffff"
+      light: "#f0f1e9"
       dark: "#09090b"
     info:
       light: "#0284c7"

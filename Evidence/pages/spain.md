@@ -3,6 +3,8 @@ title: Spain
 max_width: 1500
 ---
 
+Spain is a country of roughly 48 million people on the Iberian Peninsula in south-western Europe, with Madrid as its capital and largest city. It is highly regionalised, with strong distinct identities and co-official languages in areas such as Catalonia, the Basque Country and Galicia. Spain is a parliamentary constitutional monarchy: the 350 members of the Congress of Deputies are elected by proportional representation, and the Prime Minister leads the government. Its politics centres on the centre-left PSOE and centre-right PP, alongside Vox, Sumar and Podemos, and a range of influential regional parties.
+
 ```sql moving_avg_scatter
 SELECT
     country,
@@ -220,6 +222,12 @@ ORDER BY 1, 2
 {:else}
     <em>Loading data for Spain…</em>
 {/if}
+
+---
+
+## Coalitions
+
+See the polling broken down by Government\Opposition, Left\Right blocs, and political spectrum.
 
 <Grid cols=2>
 

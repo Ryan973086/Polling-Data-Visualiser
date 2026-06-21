@@ -3,6 +3,8 @@ title: Germany
 max_width: 1500
 ---
 
+Germany is a federal republic of about 84 million people in Central Europe — the European Union's most populous member state — with Berlin as its capital. Power is shared between the federal government and 16 states (Länder), and society has been shaped by significant post-war and more recent immigration. The Bundestag is elected through mixed-member proportional representation with a 5% threshold, and the Chancellor heads the government. Major parties include the centre-right CDU/CSU, the centre-left SPD, the Greens, the liberal FDP, the far-right AfD, and the left-wing Die Linke and BSW.
+
 ```sql moving_avg_scatter
 SELECT
     country,
@@ -220,6 +222,12 @@ ORDER BY 1, 2
 {:else}
     <em>Loading data for Germany…</em>
 {/if}
+
+---
+
+## Coalitions
+
+See the polling broken down by Government\Opposition, Left\Right blocs, and political spectrum.
 
 <Grid cols=2>
 

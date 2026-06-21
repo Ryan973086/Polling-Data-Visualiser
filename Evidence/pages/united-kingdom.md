@@ -3,6 +3,8 @@ title: United Kingdom
 max_width: 1500
 ---
 
+The United Kingdom is a country of around 68 million people in north-western Europe, made up of England, Scotland, Wales and Northern Ireland. Its population is largely urban and increasingly diverse, with London by far the largest and most multicultural city. The UK is a constitutional monarchy with a parliamentary system: 650 MPs are elected to the House of Commons under first-past-the-post, and the leader of the largest party usually becomes Prime Minister. Politics has long been dominated by Labour and the Conservatives, alongside smaller parties such as the Liberal Democrats, Reform UK, the Greens, and the nationalist SNP and Plaid Cymru.
+
 ```sql moving_avg_scatter
 SELECT
     country,
@@ -220,6 +222,12 @@ ORDER BY 1, 2
 {:else}
     <em>Loading data for United Kingdom…</em>
 {/if}
+
+---
+
+## Coalitions
+
+See the polling broken down by Government\Opposition, Left\Right blocs, and political spectrum.
 
 <Grid cols=2>
 

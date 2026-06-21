@@ -3,6 +3,8 @@ title: New Zealand
 max_width: 1500
 ---
 
+New Zealand (Aotearoa) is a Pacific nation of around 5.3 million people, spread across two main islands, with Wellington as its capital and Auckland its largest city. Its population is diverse, combining a European-descended majority with sizeable Māori, Pasifika and Asian communities. New Zealand is a parliamentary democracy and constitutional monarchy with a single-chamber House of Representatives elected by mixed-member proportional (MMP) representation. The main parties are the centre-right National and centre-left Labour, alongside the Greens, ACT, New Zealand First and Te Pāti Māori.
+
 ```sql moving_avg_scatter
 SELECT
     country,
@@ -221,6 +223,11 @@ ORDER BY 1, 2
     <em>Loading data for New Zealand…</em>
 {/if}
 
+---
+
+## Coalitions
+
+See the polling broken down by Government\Opposition, Left\Right blocs, and political spectrum.
 <Grid cols=2>
 
 <LineChart
